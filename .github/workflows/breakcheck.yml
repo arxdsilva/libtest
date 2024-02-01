@@ -8,10 +8,14 @@ env:
 
 jobs:
   breakcheck:
+    permissions: write-all
+
     strategy:
       matrix:
         go-version: [ 1.21.x ]
+
     runs-on: ubuntu-latest
+
     steps:
       - name: Install Go
         uses: actions/setup-go@v2
@@ -33,7 +37,7 @@ jobs:
           echo $(gorelease) >> result.txt
 
       - name: Comment Report on PR
-        uses: allthatjazzleo/actions-pull-request-add-comment@master
+        uses: thollander/actions-comment-pull-request@v2
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          message: "$(cat result.txt)"
+          filePath: ./result.txt
