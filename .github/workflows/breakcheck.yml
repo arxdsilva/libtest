@@ -34,7 +34,7 @@ jobs:
           OUTPUT="${OUTPUT//'%'/'%25'}"
           OUTPUT="${OUTPUT//$'\n'/'%0A'}"
           OUTPUT="${OUTPUT//$'\r'/'%0D'}"
-          echo "::set-output name=report::$OUTPUT"
+          echo "{name}={value}" >> $OUTPUT
 
       - name: Comment Report
         uses: marocchino/sticky-pull-request-comment@v2
