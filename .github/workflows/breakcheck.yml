@@ -30,7 +30,7 @@ jobs:
         id: gorelease
         run: |
           test -e ~/go/bin/gorelease || go install golang.org/x/exp/cmd/gorelease@latest
-          gorelease >> result.txt
+          echo $(gorelease) >> result.txt
 
       - name: Comment Report
         uses: thollander/actions-comment-pull-request@v2
