@@ -34,10 +34,20 @@ jobs:
         id: gorelease
         run: |
           test -e ~/go/bin/gorelease || go install golang.org/x/exp/cmd/gorelease@latest
-          echo $(gorelease) >> result.txt
+          OUTPUT=$(gorelease || exit 0)
+          OUTPUT="${OUTPUT//'%'/'%25'}"
+          OUTPUT="${OUTPUT//$'\n'/'%0A'}"
+          OUTPUT="${OUTPUT//$'\r'/'%0D'}"
+          echo "::set-output name=report::$OUTPUT"
 
       - name: Comment Report on PR
-        uses: thollander/actions-comment-pull-request@v2
+        uses: marocchino/sticky-pull-request-comment@v2
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          filePath: ./result.txt
+          header: gorelease
+          message: |
+            ### Exported API Changes Report
+
+            <pre>
+            ${{ steps.gorelease.outputs.report }}
+            </pre>
