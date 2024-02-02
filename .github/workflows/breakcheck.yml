@@ -38,8 +38,8 @@ jobs:
           OUTPUT="${OUTPUT//'%'/'%25'}"
           OUTPUT="${OUTPUT//$'\n'/'%0A'}"
           OUTPUT="${OUTPUT//$'\r'/'%0D'}"
-          echo "REPORT=${OUTPUT}" >> $GITHUB_OUTPUT
-
+          echo "::set-output name=report::$OUTPUT"
+          
       - name: Comment Report on PR
         uses: marocchino/sticky-pull-request-comment@v2
         with:
@@ -49,5 +49,5 @@ jobs:
             ### Exported API Changes Report
 
             <pre>
-            ${{ steps.gorelease.outputs.REPORT }}
+            ${{ steps.gorelease.outputs.report }}
             </pre>
