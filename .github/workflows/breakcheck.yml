@@ -51,3 +51,11 @@ jobs:
             <pre>
             ${{ steps.gorelease.outputs.report }}
             </pre>
+      
+      - name: Fail on API changes
+        if : ${{ contains(steps.gorelease.outputs.report, 'Incompatible changes were detected') }}
+        run: |
+          if [[ -n "${{ steps.gorelease.outputs.report }}" ]] ; then
+            echo "Incompatible changes were detected"
+            exit 1
+          fi
