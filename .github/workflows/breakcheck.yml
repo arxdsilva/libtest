@@ -40,7 +40,7 @@ jobs:
           OUTPUT="${OUTPUT//'%'/'%25'}"
           OUTPUT="${OUTPUT//$'\n'/'%0A'}"
           OUTPUT="${OUTPUT//$'\r'/'%0D'}"
-          echo "::set-output name=report::$OUTPUT"
+          echo "report=$OUTPUT" >> "$GITHUB_OUTPUT"
           
       - name: Comment Report on PR
         uses: marocchino/sticky-pull-request-comment@v2
