@@ -36,23 +36,20 @@ jobs:
         id: gorelease
         run: |
           test -e ~/go/bin/gorelease || go install golang.org/x/exp/cmd/gorelease@latest
-          OUTPUT=$
-          OUTPUT="${OUTPUT//'%'/'%25'}"
-          OUTPUT="${OUTPUT//$'\n'/'%0A'}"
-          OUTPUT="${OUTPUT//$'\r'/'%0D'}"
-          echo "report=$(gorelease || exit 0)" >> "$GITHUB_OUTPUT"
+          echo "### Exported API Changes Report" >> gorelease.report
+          OUTPUT=$(gorelease || exit 0)
+          echo "" >> gorelease.report
+          echo "<pre>" >> gorelease.report
+          echo "${OUTPUT}" >> gorelease.report
+          echo "</pre>" >> gorelease.report
+          echo "report=${OUTPUT}" >> $GITHUB_OUTPUT
           
       - name: Comment Report on PR
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           header: gorelease
-          message: |
-            ### Exported API Changes Report
-
-            <pre>
-            ${{ "${steps.gorelease.outputs.report//'%0A'/'\n'}" }}
-            </pre>
+          path: gorelease.report
 
       - name: Fail on API changes
         if : ${{ contains(steps.gorelease.outputs.report, 'Incompatible changes were detected') }}
