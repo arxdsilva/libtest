@@ -50,9 +50,7 @@ jobs:
           path: gorelease.report
 
       - name: Fail on API changes
-        if : ${{ contains(steps.gorelease.outputs.report, 'Incompatible changes were detected') }}
         run: |
-          if grep -q Incompatible release.report ; then
-            echo "Incompatible changes were detected"
+          if grep Incompatible gorelease.report ; then
             exit 1
           fi
