@@ -17,14 +17,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Install Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go-version }}
-      - name: Checkout code
-        uses: actions/checkout@v2
+
       - name: Gorelease cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: |
             ~/go/bin/gorelease
@@ -34,20 +36,21 @@ jobs:
         id: gorelease
         run: |
           test -e ~/go/bin/gorelease || go install golang.org/x/exp/cmd/gorelease@latest
-          OUTPUT=$(gorelease || exit 0)
-          OUTPUT="${OUTPUT//'%'/'%25'}"
-          OUTPUT="${OUTPUT//$'\n'/'%0A'}"
-          OUTPUT="${OUTPUT//$'\r'/'%0D'}"
-          echo "::set-output name=report::$OUTPUT"
+          echo "### Exported API Changes Report" >> gorelease.report
+          echo "" >> gorelease.report
+          echo "<pre>" >> gorelease.report
+          echo "$(gorelease || exit 0)" >> gorelease.report
+          echo "</pre>" >> gorelease.report
           
       - name: Comment Report on PR
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           header: gorelease
-          message: |
-            ### Exported API Changes Report
+          path: gorelease.report
 
-            <pre>
-            ${{ steps.gorelease.outputs.report }}
-            </pre>
+      - name: Fail on API changes
+        run: |
+          if grep Incompatible gorelease.report ; then
+            exit 1
+          fi
