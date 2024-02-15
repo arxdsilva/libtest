@@ -1,16 +1,11 @@
 name: breakcheck
 
 on:
-  pull_request:
   workflow_call:
     inputs:
-      # project(application) name.
       project:
         required: true
         type: string
-
-env:
-  GO111MODULE: "on"
 
 jobs:
   breakcheck:
@@ -23,13 +18,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: debug
+        run: echo "inputs ${{ inputs.project }}"
+
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Install Go
         uses: actions/setup-go@v5
         with:
-          go-version: ${{ matrix.go-version }}
+          go-version: 1.21.x
 
       - name: Gorelease cache
         uses: actions/cache@v4
