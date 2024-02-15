@@ -18,9 +18,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: debug
-        run: echo "inputs ${{ inputs.project }}"
-
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -41,22 +38,21 @@ jobs:
         run: |
           test -e ~/go/bin/gorelease || go install golang.org/x/exp/cmd/gorelease@latest
           cd ${{ inputs.project }}
-          echo "### Exported API Changes Report" >> gorelease.report
-          echo "" >> gorelease.report
-          echo "<pre>" >> gorelease.report
-          echo "$(gorelease || exit 0)" >> gorelease.report
-          echo "</pre>" >> gorelease.report
+          echo "### Exported API Changes Report" >> ../gorelease.report
+          echo "" >> ../gorelease.report
+          echo "<pre>" >> ../gorelease.report
+          echo "$(gorelease || exit 0)" >> ../gorelease.report
+          echo "</pre>" >> ../gorelease.report
 
       - name: Comment Report on PR
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           header: gorelease
-          path: ${{ inputs.project }}/gorelease.report
+          path: gorelease.report
 
       - name: Fail on API changes
         run: |
-          cd ${{ inputs.project }}
           if grep Incompatible gorelease.report ; then
             exit 1
           fi
