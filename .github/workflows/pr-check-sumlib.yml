@@ -1,0 +1,19 @@
+name: PR check for pr-check-sumlib
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - reopened
+      - edited
+      - synchronize
+    paths:
+      - sumlib/**
+
+jobs:
+  call-workflow-go-pr-check:
+    uses: arxdsilva/libtest/.github/workflows/breakcheck.yml@main
+    with:
+      project: sumlib
