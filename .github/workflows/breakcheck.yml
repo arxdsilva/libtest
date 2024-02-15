@@ -43,6 +43,7 @@ jobs:
           echo "<pre>" >> ../gorelease.report
           echo "$(gorelease || exit 0)" >> ../gorelease.report
           echo "</pre>" >> ../gorelease.report
+          cat ../gorelease.report
 
       - name: Comment Report on PR
         uses: marocchino/sticky-pull-request-comment@v2
