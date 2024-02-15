@@ -14,6 +14,7 @@ on:
 
 jobs:
   call-workflow-pr-check:
-    uses: arxdsilva/libtest/.github/workflows/breakcheck.yml
+    uses: arxdsilva/libtest/.github/workflows/breakcheck.yml@main
     with:
       project: sumlib
+
