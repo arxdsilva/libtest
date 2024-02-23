@@ -35,7 +35,10 @@ jobs:
 
       - name: Generate gorelease report
         id: gorelease
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          git config --global url.ssh://$GITHUB_TOKEN@github.com/.insteadOf https://github.com/
           test -e ~/go/bin/gorelease || go install golang.org/x/exp/cmd/gorelease@latest
           cd ${{ inputs.project }}
           echo "### Exported API Changes Report" >> ../gorelease.report
